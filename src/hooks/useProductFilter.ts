@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Product } from '@/types/product';
 import { useDebounce } from './useDebounce';
 
@@ -25,10 +25,12 @@ export function useProductFilter(
   
   const debouncedQuery = useDebounce<string>(searchQuery, debounceDelay);
 
-  // Reset to page 1 whenever the debounced search query changes
-  useEffect(() => {
+  // Intercept the search query update to reset the page immediately.
+  // This completely eliminates the need for useEffect and prevents cascading renders.
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
     setCurrentPage(1);
-  }, [debouncedQuery]);
+  };
 
   const filteredProducts = useMemo(() => {
     if (!debouncedQuery.trim()) {
@@ -60,7 +62,7 @@ export function useProductFilter(
 
   return {
     searchQuery,
-    setSearchQuery,
+    setSearchQuery: handleSearchChange, // Export the wrapped handler
     paginatedProducts,
     isSearching,
     totalFiltered,
