@@ -35,22 +35,33 @@ As a product-minded engineer, I made several intentional architectural decisions
 
 ## 📂 Folder Structure
 
-```text
-src/
-├── app/
-│   ├── globals.css        # Tailwind directives and core layers
-│   ├── layout.tsx         # Global layout and semantic background injection
-│   └── page.tsx           # Main discovery interface
-├── components/
-│   ├── CategoryFilter.tsx # Dynamic scrollable category pills
-│   ├── Pagination.tsx     # Custom logic & dropdown pagination
-│   ├── ProductCard.tsx    # High-performance card with skeleton loaders
-│   ├── ProductGrid.tsx    # Responsive grid and empty states
-│   └── SearchBar.tsx      # Debounced search input
-├── data/
-│   └── items.json         # Raw catalog data
-├── hooks/
-│   ├── useDebounce.ts     # Prevents rapid-fire search renders
-│   └── useProductFilter.ts# Core filtering, transition, and pagination logic
-└── types/
-    └── product.ts         # Strict interfaces
+    src/
+    ├── app/
+    │   ├── globals.css        # Tailwind directives and core layers
+    │   ├── layout.tsx         # Global layout and semantic background injection
+    │   └── page.tsx           # Main discovery interface
+    ├── components/
+    │   ├── CategoryFilter.tsx # Dynamic scrollable category pills
+    │   ├── Pagination.tsx     # Custom logic & dropdown pagination
+    │   ├── ProductCard.tsx    # High-performance card with skeleton loaders
+    │   ├── ProductGrid.tsx    # Responsive grid and empty states
+    │   └── SearchBar.tsx      # Debounced search input
+    ├── data/
+    │   └── items.json         # Raw catalog data
+    ├── hooks/
+    │   ├── useDebounce.ts     # Prevents rapid-fire search renders
+    │   └── useProductFilter.ts# Core filtering, transition, and pagination logic
+    └── types/
+        └── product.ts         # Strict interfaces
+
+## 💻 Getting Started
+
+First, install the dependencies:
+
+    npm install
+
+Then, run the development server:
+
+    npm run dev
+
+Open http://localhost:3000 with your browser to see the result.
