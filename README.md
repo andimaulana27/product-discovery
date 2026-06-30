@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Curated Collection - Premium Product Discovery
 
-## Getting Started
+A modern, highly-polished e-commerce product discovery interface built with Next.js and TypeScript. This project focuses heavily on the "last 20%" of product engineering: smooth interactions, intelligent rendering, and a premium user experience (UX).
 
-First, run the development server:
+## 🚀 Product Decisions & Engineering Philosophy
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+As a product-minded engineer, I made several intentional architectural decisions to balance Developer Experience (DX) with an uncompromising User Experience (UX):
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Concurrent Rendering (`useTransition`)**
+   Handling large datasets (like 4,000+ items) purely on the client-side can freeze the browser during heavy filter computations or DOM updates. I implemented React 18's `useTransition` to keep the UI perfectly responsive. When users switch categories, they see an elegant, non-blocking blur/fade transition instead of a frozen screen.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Strategic Image Optimization (DX vs. UX)**
+   Next.js `<Image>` optimization is fantastic for production but can cause massive local bottlenecks when dynamically rendering dozens of new images during category switches. I bypassed this specifically for `NODE_ENV === 'development'` to allow instant local iteration, while guaranteeing 100% optimization when deployed to production.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **The "Polish" (Semantic Design & Micro-interactions)**
+   - **Semantic Tailwind Palette:** Replaced hardcoded grays with a scalable `surface` and `ink` color system.
+   - **Custom Easing:** Implemented `ease-out-expo` for luxurious, weightless hover states.
+   - **Custom Dropdown:** Completely replaced the native HTML `<select>` with a custom React dropdown (with click-outside detection and directional awareness) to maintain brand aesthetics across all operating systems.
+   - **Skeleton Loaders:** Added built-in pulse skeletons that gracefully fade into the high-resolution images upon load.
 
-## Learn More
+## 🛠 Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** Next.js (App Router)
+- **Library:** React 18
+- **Language:** TypeScript (Strict typing for robust state management)
+- **Styling:** Tailwind CSS
+- **Data Handling:** Custom generic hooks (`useDebounce`, `useProductFilter`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ✨ Key Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Multi-dimensional Search:** Real-time filtering by title, brand, and tags simultaneously.
+- **Dynamic Categories:** Automatically extracts and builds category filters from the raw dataset.
+- **Flawless Pagination:** Prevents "empty state" bugs by safely resetting to page 1 during new searches, without cascading `useEffect` renders.
+- **Empty States:** Premium, helpful empty states when a search yields no results.
 
-## Deploy on Vercel
+## 📂 Folder Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+src/
+├── app/
+│   ├── globals.css        # Tailwind directives and core layers
+│   ├── layout.tsx         # Global layout and semantic background injection
+│   └── page.tsx           # Main discovery interface
+├── components/
+│   ├── CategoryFilter.tsx # Dynamic scrollable category pills
+│   ├── Pagination.tsx     # Custom logic & dropdown pagination
+│   ├── ProductCard.tsx    # High-performance card with skeleton loaders
+│   ├── ProductGrid.tsx    # Responsive grid and empty states
+│   └── SearchBar.tsx      # Debounced search input
+├── data/
+│   └── items.json         # Raw catalog data
+├── hooks/
+│   ├── useDebounce.ts     # Prevents rapid-fire search renders
+│   └── useProductFilter.ts# Core filtering, transition, and pagination logic
+└── types/
+    └── product.ts         # Strict interfaces
