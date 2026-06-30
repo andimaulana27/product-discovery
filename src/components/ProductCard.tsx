@@ -7,8 +7,14 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const formattedPrice = product.price !== null ? `$${product.price.toFixed(2)}` : 'N/A';
-  const formattedRating = product.rating !== null ? product.rating.toFixed(1) : '-';
+  // Safely parse price to ensure it is treated as a number at runtime.
+  // This prevents the "toFixed is not a function" TypeError.
+  const parsedPrice = product.price !== null && product.price !== undefined ? Number(product.price) : null;
+  const formattedPrice = parsedPrice !== null && !isNaN(parsedPrice) ? `$${parsedPrice.toFixed(2)}` : 'N/A';
+
+  // Apply the same safety measure to the rating property.
+  const parsedRating = product.rating !== null && product.rating !== undefined ? Number(product.rating) : null;
+  const formattedRating = parsedRating !== null && !isNaN(parsedRating) ? parsedRating.toFixed(1) : '-';
 
   return (
     <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col h-full overflow-hidden group">
