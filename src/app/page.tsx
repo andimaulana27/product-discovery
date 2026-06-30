@@ -6,13 +6,24 @@ import { Product } from '@/types/product';
 import { useProductFilter } from '@/hooks/useProductFilter';
 import { SearchBar } from '@/components/SearchBar';
 import { ProductGrid } from '@/components/ProductGrid';
+import { Pagination } from '@/components/Pagination';
 
 // Type assertion to ensure the imported JSON strictly matches our interface
-// This prevents TypeScript from inferring 'any' or generalized types from the JSON
 const initialProducts: Product[] = productsData as Product[];
 
 export default function ProductDiscoveryPage() {
-  const { searchQuery, setSearchQuery, filteredProducts, isSearching } = useProductFilter(initialProducts);
+  const { 
+    searchQuery, 
+    setSearchQuery, 
+    paginatedProducts, 
+    isSearching,
+    totalFiltered,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    totalPages
+  } = useProductFilter(initialProducts);
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
@@ -40,12 +51,22 @@ export default function ProductDiscoveryPage() {
             {searchQuery ? "Search Results" : "All Products"}
           </h2>
           <span className="text-sm font-medium text-gray-500 bg-gray-200 px-3 py-1 rounded-full">
-            {filteredProducts.length} items
+            {totalFiltered} items found
           </span>
         </div>
 
         {/* Product Grid Section */}
-        <ProductGrid products={filteredProducts} />
+        <ProductGrid products={paginatedProducts} />
+
+        {/* Pagination Section */}
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalFiltered}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
       </div>
     </main>
   );

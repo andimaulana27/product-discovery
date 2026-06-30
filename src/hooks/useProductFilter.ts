@@ -1,32 +1,36 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Product } from '@/types/product';
 import { useDebounce } from './useDebounce';
 
 interface UseProductFilterReturn {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  filteredProducts: Product[];
+  paginatedProducts: Product[];
   isSearching: boolean;
+  totalFiltered: number;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  itemsPerPage: number;
+  setItemsPerPage: (items: number) => void;
+  totalPages: number;
 }
 
-/**
- * Custom hook to manage product filtering logic with debounce and memoization.
- * * @param initialProducts - The full array of products to filter.
- * @param debounceDelay - The delay in milliseconds for the debounce hook (default: 300).
- * @returns Object containing state and filtered data.
- */
 export function useProductFilter(
   initialProducts: Product[],
   debounceDelay: number = 300
 ): UseProductFilterReturn {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(24);
   
-  // Apply debounce to the search query
   const debouncedQuery = useDebounce<string>(searchQuery, debounceDelay);
 
-  // Memoize the filtering logic to prevent unnecessary recalculations
+  // Reset to page 1 whenever the debounced search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedQuery]);
+
   const filteredProducts = useMemo(() => {
-    // Return all products if the search query is empty
     if (!debouncedQuery.trim()) {
       return initialProducts;
     }
@@ -36,8 +40,6 @@ export function useProductFilter(
     return initialProducts.filter((product) => {
       const matchTitle = product.title.toLowerCase().includes(lowerCaseQuery);
       const matchBrand = product.brand.toLowerCase().includes(lowerCaseQuery);
-      
-      // Check if any tag matches the query
       const matchTags = product.tags.some((tag) =>
         tag.toLowerCase().includes(lowerCaseQuery)
       );
@@ -46,13 +48,26 @@ export function useProductFilter(
     });
   }, [debouncedQuery, initialProducts]);
 
-  // Determine if a search operation is currently pending
   const isSearching = searchQuery !== debouncedQuery;
+  const totalFiltered = filteredProducts.length;
+  const totalPages = Math.ceil(totalFiltered / itemsPerPage);
+
+  // Slice the filtered products based on the current pagination state
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredProducts, currentPage, itemsPerPage]);
 
   return {
     searchQuery,
     setSearchQuery,
-    filteredProducts,
+    paginatedProducts,
     isSearching,
+    totalFiltered,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    totalPages,
   };
 }

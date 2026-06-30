@@ -4,11 +4,11 @@ import { Product } from '@/types/product';
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, priority = false }) => {
   // Safely parse price to ensure it is treated as a number at runtime.
-  // This prevents the "toFixed is not a function" TypeError.
   const parsedPrice = product.price !== null && product.price !== undefined ? Number(product.price) : null;
   const formattedPrice = parsedPrice !== null && !isNaN(parsedPrice) ? `$${parsedPrice.toFixed(2)}` : 'N/A';
 
@@ -26,6 +26,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             alt={product.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            priority={priority}
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
