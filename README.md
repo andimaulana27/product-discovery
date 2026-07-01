@@ -54,6 +54,13 @@ As a product-minded engineer, I made several intentional architectural decisions
     └── types/
         └── product.ts         # Strict interfaces
 
+## ⚖️ Trade-offs & Next Steps
+
+Building a purely client-side filtering experience provides lightning-fast interactions for 4,000 items. However, I am highly aware of the following tradeoff:
+
+- **The Trade-off (Bundle Size):** Sending 4,000+ JSON records directly to the client increases the initial JS payload. While acceptable for this MVP, if the catalog scales to 50,000+ items, it will severely degrade the initial page load performance.
+- **What I'd Do Next:** To scale this, I would migrate the dataset to a PostgreSQL database (like Supabase), implement full-text search on the backend, and transition the application to use server-side pagination via API routes. This ensures the frontend remains lightweight while handling an infinitely scaling catalog.
+
 ## 💻 Getting Started
 
 First, install the dependencies:
